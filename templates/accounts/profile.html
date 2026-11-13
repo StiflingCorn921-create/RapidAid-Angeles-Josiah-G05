@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - RapidAid{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card card-custom shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="card-title text-rapidaid-dark fw-bold mb-0">User Profile</h4>
+          <span class="badge" style="background-color: var(--color-accent); color: #fff;">
+            Role: {{ user.get_role_display }}
+          </span>
+        </div>
+        <p class="text-muted small mb-4">View and update your personal details and contact number.</p>
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small text-secondary">Username</label>
+            <input type="text" class="form-control bg-light" value="{{ user.username }}" disabled>
+            <div class="form-text text-muted" style="font-size: 0.8rem;">Usernames cannot be changed.</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold small text-secondary">First Name</label>
+              <input type="text" name="first_name" id="{{ form.first_name.id_for_label }}" value="{{ form.first_name.value|default:'' }}" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}">
+              {% for error in form.first_name.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold small text-secondary">Last Name</label>
+              <input type="text" name="last_name" id="{{ form.last_name.id_for_label }}" value="{{ form.last_name.value|default:'' }}" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}">
+              {% for error in form.last_name.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold small text-secondary">Email Address <span class="text-danger">*</span></label>
+            <input type="email" name="email" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default:'' }}" class="form-control {% if form.email.errors %}is-invalid{% endif %}">
+            {% for error in form.email.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.phone_number.id_for_label }}" class="form-label fw-semibold small text-secondary">Emergency Contact Phone Number</label>
+            <input type="text" name="phone_number" id="{{ form.phone_number.id_for_label }}" value="{{ form.phone_number.value|default:'' }}" class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}">
+            {% for error in form.phone_number.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+            <button type="submit" class="btn btn-rapidaid px-4 fw-semibold">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

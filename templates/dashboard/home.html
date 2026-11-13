@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - RapidAid{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2 class="text-rapidaid-dark fw-bold">Welcome, {{ user.first_name|default:user.username }}!</h2>
+  <p class="text-muted">Role: <span class="badge" style="background-color: var(--color-accent); color: #fff;">{{ role_display }}</span> | Email: {{ user.email }}</p>
+</div>
+
+<div class="card card-custom mb-4 shadow-sm">
+  <div class="card-header">Account Details</div>
+  <div class="card-body">
+    <p class="mb-2"><strong>Role:</strong> {{ role_display }}</p>
+    <p class="mb-2"><strong>Phone Number:</strong> {{ user.phone_number|default:"Not set" }}</p>
+    <p class="mb-2"><strong>Total Registered Members:</strong> {{ total_members }}</p>
+    <p class="mb-0"><strong>Last Login:</strong> {{ user.last_login|date:"M d, Y H:i"|default:"First login" }}</p>
+  </div>
+</div>
+
+<div class="card card-custom shadow-sm">
+  <div class="card-header">Quick Actions</div>
+  <div class="card-body">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{% url 'profile' %}" class="btn btn-rapidaid-outline btn-sm">Edit Profile</a>
+      {% if is_responder or is_admin %}
+        <a href="{% url 'responder_panel' %}" class="btn btn-sm" style="background-color: var(--color-accent); color: #fff;">Responder Panel</a>
+      {% endif %}
+      {% if is_admin %}
+        <a href="{% url 'admin_panel' %}" class="btn btn-rapidaid btn-sm">Admin Panel</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

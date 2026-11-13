@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}System Admin Panel - RapidAid{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2>System Administration Panel</h2>
+  <p class="text-muted">Platform management and administrative controls</p>
+</div>
+
+<div class="card">
+  <div class="card-header">Admin Tools</div>
+  <div class="card-body">
+    <p>This view is protected with <code>UserPassesTestMixin</code> checking for <code>Role.ADMIN</code>. Any non-admin attempting to open this URL receives a <strong>403 Forbidden</strong>.</p>
+    <a href="/admin/" class="btn btn-dark btn-sm" target="_blank">Open Django Admin</a>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm ms-2">Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}
