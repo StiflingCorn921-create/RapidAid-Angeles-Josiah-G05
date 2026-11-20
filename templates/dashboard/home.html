@@ -9,10 +9,14 @@
 </div>
 
 <div class="card card-custom mb-4 shadow-sm">
-  <div class="card-header">Account Details</div>
+  <div class="card-header">Account & Incident Summary</div>
   <div class="card-body">
     <p class="mb-2"><strong>Role:</strong> {{ role_display }}</p>
     <p class="mb-2"><strong>Phone Number:</strong> {{ user.phone_number|default:"Not set" }}</p>
+    <p class="mb-2"><strong>My Reported Incidents:</strong> {{ my_incidents_count }}</p>
+    {% if is_responder or is_admin %}
+      <p class="mb-2"><strong>Active Incidents (All Users):</strong> {{ open_incidents_count }}</p>
+    {% endif %}
     <p class="mb-2"><strong>Total Registered Members:</strong> {{ total_members }}</p>
     <p class="mb-0"><strong>Last Login:</strong> {{ user.last_login|date:"M d, Y H:i"|default:"First login" }}</p>
   </div>
@@ -22,12 +26,14 @@
   <div class="card-header">Quick Actions</div>
   <div class="card-body">
     <div class="d-flex flex-wrap gap-2">
-      <a href="{% url 'profile' %}" class="btn btn-rapidaid-outline btn-sm">Edit Profile</a>
+      <a href="{% url 'incident_create' %}" class="btn btn-rapidaid btn-sm">Report Incident</a>
+      <a href="{% url 'incident_list' %}" class="btn btn-rapidaid-outline btn-sm">View Incidents</a>
+      <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm">Edit Profile</a>
       {% if is_responder or is_admin %}
         <a href="{% url 'responder_panel' %}" class="btn btn-sm" style="background-color: var(--color-accent); color: #fff;">Responder Panel</a>
       {% endif %}
       {% if is_admin %}
-        <a href="{% url 'admin_panel' %}" class="btn btn-rapidaid btn-sm">Admin Panel</a>
+        <a href="{% url 'admin_panel' %}" class="btn btn-dark btn-sm">Admin Panel</a>
       {% endif %}
     </div>
   </div>
