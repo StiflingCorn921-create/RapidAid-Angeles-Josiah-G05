@@ -73,6 +73,9 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'incident_list' %}">Incidents</a>
+            </li>
             {% if user.role == 'RESPONDER' or user.role == 'ADMIN' %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'responder_panel' %}">Responder Tools</a>

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ incident.title }} - RapidAid{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card card-custom shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Incident Details</span>
+        <span class="badge" style="background-color: var(--color-accent); color: #fff;">
+          {{ incident.get_status_display }}
+        </span>
+      </div>
+      <div class="card-body p-4">
+        <h3 class="text-rapidaid-dark fw-bold mb-3">{{ incident.title }}</h3>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <p class="mb-1"><strong>Category:</strong> {{ incident.category.name }}</p>
+            <p class="mb-1"><strong>Severity:</strong> {{ incident.get_severity_display }}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="mb-1"><strong>Location:</strong> {{ incident.location }}</p>
+            <p class="mb-1"><strong>Reported By:</strong> {{ incident.reporter.username }}</p>
+          </div>
+        </div>
+
+        <hr>
+        <h6 class="fw-bold text-secondary">Description</h6>
+        <p class="mb-4">{{ incident.description|linebreaks }}</p>
+
+        {% if is_staff_role %}
+          <div class="p-3 mb-4 rounded border" style="background-color: #f8fbfe; border-color: var(--color-card-border) !important;">
+            <form method="post" action="{% url 'incident_status' incident.pk %}" class="d-flex align-items-center gap-2">
+              {% csrf_token %}
+              <label for="{{ status_form.status.id_for_label }}" class="fw-semibold small text-secondary mb-0">Update Status:</label>
+              {{ status_form.status }}
+              <button type="submit" class="btn btn-rapidaid btn-sm">Update</button>
+            </form>
+          </div>
+        {% endif %}
+
+        <p class="text-muted small mb-4">
+          Created: {{ incident.created_at|date:"M d, Y H:i" }} | Updated: {{ incident.updated_at|date:"M d, Y H:i" }}
+        </p>
+
+        <div class="d-flex justify-content-between">
+          <a href="{% url 'incident_list' %}" class="btn btn-outline-secondary">Back to List</a>
+          {% if incident.reporter == user or user.role == 'ADMIN' %}
+            <div class="d-flex gap-2">
+              <a href="{% url 'incident_update' incident.pk %}" class="btn btn-rapidaid-outline">Edit</a>
+              <a href="{% url 'incident_delete' incident.pk %}" class="btn btn-outline-danger">Delete</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
