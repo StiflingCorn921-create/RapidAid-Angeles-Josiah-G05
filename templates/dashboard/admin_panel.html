@@ -4,15 +4,24 @@
 
 {% block content %}
 <div class="mb-4">
-  <h2>System Administration Panel</h2>
-  <p class="text-muted">Platform management and administrative controls</p>
+  <h2 class="text-rapidaid-dark fw-bold">System Administration Panel</h2>
+  <p class="text-muted">Platform management and incident oversight</p>
 </div>
 
-<div class="card">
+<div class="card card-custom shadow-sm mb-4">
+  <div class="card-header">Incident System Overview</div>
+  <div class="card-body">
+    <p class="mb-2"><strong>Total Incident Reports:</strong> {{ total_incidents }}</p>
+    <p class="mb-2"><strong>Open Incidents:</strong> {{ open_incidents }}</p>
+    <p class="mb-0"><strong>Resolved Incidents:</strong> {{ resolved_incidents }}</p>
+  </div>
+</div>
+
+<div class="card card-custom shadow-sm">
   <div class="card-header">Admin Tools</div>
   <div class="card-body">
-    <p>This view is protected with <code>UserPassesTestMixin</code> checking for <code>Role.ADMIN</code>. Any non-admin attempting to open this URL receives a <strong>403 Forbidden</strong>.</p>
-    <a href="/admin/" class="btn btn-dark btn-sm" target="_blank">Open Django Admin</a>
+    <a href="{% url 'incident_list' %}" class="btn btn-rapidaid btn-sm">Manage All Incidents</a>
+    <a href="/admin/" class="btn btn-dark btn-sm ms-2" target="_blank">Open Django Admin</a>
     <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm ms-2">Back to Dashboard</a>
   </div>
 </div>

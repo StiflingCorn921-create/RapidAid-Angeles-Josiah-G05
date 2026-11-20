@@ -4,6 +4,7 @@ from .views import (
     IncidentDeleteView,
     IncidentDetailView,
     IncidentListView,
+    IncidentStatusUpdateView,
     IncidentUpdateView,
 )
 
@@ -13,4 +14,5 @@ urlpatterns = [
     path("<int:pk>/", IncidentDetailView.as_view(), name="incident_detail"),
     path("<int:pk>/edit/", IncidentUpdateView.as_view(), name="incident_update"),
     path("<int:pk>/delete/", IncidentDeleteView.as_view(), name="incident_delete"),
+    path("<int:pk>/status/", IncidentStatusUpdateView.as_view(), name="incident_status"),
 ]

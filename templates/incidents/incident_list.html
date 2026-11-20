@@ -6,13 +6,17 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
     <h2 class="text-rapidaid-dark fw-bold mb-1">Incident Reports</h2>
-    <p class="text-muted mb-0">Log and track emergency incidents</p>
+    <p class="text-muted mb-0">
+      {% if is_staff_role %}All reported emergency incidents{% else %}Log and track your emergency incidents{% endif %}
+    </p>
   </div>
   <a href="{% url 'incident_create' %}" class="btn btn-rapidaid">Report Incident</a>
 </div>
 
 <div class="card card-custom shadow-sm">
-  <div class="card-header">My Reported Incidents</div>
+  <div class="card-header">
+    {% if is_staff_role %}All Incidents{% else %}My Reported Incidents{% endif %}
+  </div>
   <div class="card-body p-0">
     {% if incidents %}
       <div class="table-responsive">
@@ -21,6 +25,7 @@
             <tr>
               <th>Title</th>
               <th>Category</th>
+              {% if is_staff_role %}<th>Reporter</th>{% endif %}
               <th>Location</th>
               <th>Severity</th>
               <th>Status</th>
@@ -37,6 +42,7 @@
                   </a>
                 </td>
                 <td>{{ incident.category.name }}</td>
+                {% if is_staff_role %}<td>{{ incident.reporter.username }}</td>{% endif %}
                 <td>{{ incident.location }}</td>
                 <td>{{ incident.get_severity_display }}</td>
                 <td>
@@ -47,8 +53,10 @@
                 <td class="text-muted small">{{ incident.created_at|date:"M d, Y H:i" }}</td>
                 <td class="text-end">
                   <a href="{% url 'incident_detail' incident.pk %}" class="btn btn-rapidaid-outline btn-sm">View</a>
-                  <a href="{% url 'incident_update' incident.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
-                  <a href="{% url 'incident_delete' incident.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                  {% if incident.reporter == user or user.role == 'ADMIN' %}
+                    <a href="{% url 'incident_update' incident.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                    <a href="{% url 'incident_delete' incident.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                  {% endif %}
                 </td>
               </tr>
             {% endfor %}

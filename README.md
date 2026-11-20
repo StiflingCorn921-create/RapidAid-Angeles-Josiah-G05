@@ -68,3 +68,34 @@ To design and develop a secure, relational database-driven web platform using Py
 - **Database**: PostgreSQL / Supabase
 - **Frontend**: HTML5, Django Templates, Bootstrap 5 CDN
 - **Version Control**: Git & GitHub
+
+---
+
+## Core Feature Implemented (PD2: Incident Reporting & Response Tracking)
+- **Relational Models**: `EmergencyCategory` and `IncidentReport` (linked via `ForeignKey` to `CustomUser` and `EmergencyCategory`) stored in Supabase PostgreSQL.
+- **Full CRUD**: Logged-in users can create, view, edit, and delete incident reports with form validation and flash messages.
+- **Role-Based Access**:
+  - **Bystander**: Can create incident reports and view/edit/delete only their own reports.
+  - **Certified First Responder**: Can view all reported incidents, access the Responder Queue, and update incident status (`Open`, `In Progress`, `Resolved`).
+  - **System Administrator**: Full oversight across all incidents, dashboards, and Django Admin.
+
+---
+
+## Setup Steps
+1. Clone the repository and open the project folder.
+2. Create and activate a virtual environment:
+   ```powershell
+   python -m venv .venv
+   .venv\Scripts\Activate.ps1
+   ```
+3. Install dependencies:
+   ```powershell
+   pip install -r requirements.txt
+   ```
+4. Create a `.env` file with your Django and PostgreSQL/Supabase credentials (`DJANGO_SECRET_KEY`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`).
+5. Apply migrations and start the server:
+   ```powershell
+   python manage.py migrate
+   python manage.py runserver
+   ```
+
