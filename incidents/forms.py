@@ -1,4 +1,5 @@
 from django import forms
+from django.db import transaction
 from .models import EmergencyCategory, IncidentReport
 
 
@@ -53,17 +54,18 @@ class IncidentReportForm(forms.ModelForm):
         return location
 
     def save(self, commit=True):
-        instance = super().save(commit=False)
-        category_name = self.cleaned_data["category_name"]
-        existing = EmergencyCategory.objects.filter(name__iexact=category_name).first()
-        if existing:
-            instance.category = existing
-        else:
-            instance.category = EmergencyCategory.objects.create(name=category_name)
+        with transaction.atomic():
+            instance = super().save(commit=False)
+            category_name = self.cleaned_data["category_name"]
+            existing = EmergencyCategory.objects.filter(name__iexact=category_name).first()
+            if existing:
+                instance.category = existing
+            else:
+                instance.category = EmergencyCategory.objects.create(name=category_name)
 
-        if commit:
-            instance.save()
-        return instance
+            if commit:
+                instance.save()
+            return instance
 
 
 class IncidentStatusForm(forms.ModelForm):

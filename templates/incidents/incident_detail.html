@@ -47,7 +47,7 @@
 
         <div class="d-flex justify-content-between">
           <a href="{% url 'incident_list' %}" class="btn btn-outline-secondary">Back to List</a>
-          {% if incident.reporter == user or user.role == 'ADMIN' %}
+          {% if user.role == 'ADMIN' or incident.reporter == user and incident.status != 'RESOLVED' %}
             <div class="d-flex gap-2">
               <a href="{% url 'incident_update' incident.pk %}" class="btn btn-rapidaid-outline">Edit</a>
               <a href="{% url 'incident_delete' incident.pk %}" class="btn btn-outline-danger">Delete</a>
