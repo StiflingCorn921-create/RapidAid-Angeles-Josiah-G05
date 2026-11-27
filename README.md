@@ -99,3 +99,12 @@ To design and develop a secure, relational database-driven web platform using Py
    python manage.py runserver
    ```
 
+---
+
+## Running Automated Tests
+Run the Django test suite with:
+```powershell
+python manage.py test
+```
+
+
