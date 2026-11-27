@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 from accounts.models import CustomUser
@@ -10,6 +11,11 @@ from .models import EmergencyCategory, IncidentReport
 
 def is_responder_or_admin(user):
     return user.role in [CustomUser.Role.RESPONDER, CustomUser.Role.ADMIN]
+
+
+class IncidentObjectMixin:
+    def get_object(self, queryset=None):
+        return get_object_or_404(IncidentReport, pk=self.kwargs["pk"])
 
 
 class IncidentListView(LoginRequiredMixin, ListView):
@@ -29,7 +35,7 @@ class IncidentListView(LoginRequiredMixin, ListView):
         return context
 
 
-class IncidentDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class IncidentDetailView(LoginRequiredMixin, IncidentObjectMixin, UserPassesTestMixin, DetailView):
     model = IncidentReport
     template_name = "incidents/incident_detail.html"
     context_object_name = "incident"
@@ -61,8 +67,12 @@ class IncidentCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         form.instance.reporter = self.request.user
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors below.")
+        return super().form_invalid(form)
 
-class IncidentUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+
+class IncidentUpdateView(LoginRequiredMixin, IncidentObjectMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = IncidentReport
     form_class = IncidentReportForm
     template_name = "incidents/incident_form.html"
@@ -78,8 +88,12 @@ class IncidentUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessage
         incident = self.get_object()
         return incident.reporter == self.request.user or self.request.user.role == CustomUser.Role.ADMIN
 
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors below.")
+        return super().form_invalid(form)
 
-class IncidentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+
+class IncidentDeleteView(LoginRequiredMixin, IncidentObjectMixin, UserPassesTestMixin, DeleteView):
     model = IncidentReport
     template_name = "incidents/incident_confirm_delete.html"
     context_object_name = "incident"
@@ -94,7 +108,7 @@ class IncidentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return super().form_valid(form)
 
 
-class IncidentStatusUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+class IncidentStatusUpdateView(LoginRequiredMixin, IncidentObjectMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = IncidentReport
     form_class = IncidentStatusForm
     http_method_names = ["post"]
@@ -102,6 +116,10 @@ class IncidentStatusUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessM
 
     def test_func(self):
         return is_responder_or_admin(self.request.user)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Invalid status selection.")
+        return redirect("incident_detail", pk=self.object.pk)
 
     def get_success_url(self):
         return reverse("incident_detail", kwargs={"pk": self.object.pk})
