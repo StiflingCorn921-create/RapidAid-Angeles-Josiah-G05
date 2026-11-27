@@ -86,7 +86,9 @@ class IncidentUpdateView(LoginRequiredMixin, IncidentObjectMixin, UserPassesTest
 
     def test_func(self):
         incident = self.get_object()
-        return incident.reporter == self.request.user or self.request.user.role == CustomUser.Role.ADMIN
+        if self.request.user.role == CustomUser.Role.ADMIN:
+            return True
+        return incident.reporter == self.request.user and incident.status != IncidentReport.Status.RESOLVED
 
     def form_invalid(self, form):
         messages.error(self.request, "Please correct the errors below.")
@@ -101,7 +103,9 @@ class IncidentDeleteView(LoginRequiredMixin, IncidentObjectMixin, UserPassesTest
 
     def test_func(self):
         incident = self.get_object()
-        return incident.reporter == self.request.user or self.request.user.role == CustomUser.Role.ADMIN
+        if self.request.user.role == CustomUser.Role.ADMIN:
+            return True
+        return incident.reporter == self.request.user and incident.status != IncidentReport.Status.RESOLVED
 
     def form_valid(self, form):
         messages.success(self.request, "Incident report deleted.")
