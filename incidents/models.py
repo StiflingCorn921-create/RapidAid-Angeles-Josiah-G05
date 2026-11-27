@@ -1,9 +1,10 @@
 from django.conf import settings
+from django.core.validators import MinLengthValidator
 from django.db import models
 
 
 class EmergencyCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, validators=[MinLengthValidator(2)])
     description = models.TextField(blank=True)
 
     class Meta:
@@ -36,8 +37,8 @@ class IncidentReport(models.Model):
         on_delete=models.PROTECT,
         related_name="incidents",
     )
-    title = models.CharField(max_length=150)
-    location = models.CharField(max_length=200)
+    title = models.CharField(max_length=150, validators=[MinLengthValidator(5)])
+    location = models.CharField(max_length=200, validators=[MinLengthValidator(3)])
     severity = models.CharField(
         max_length=10,
         choices=Severity.choices,
